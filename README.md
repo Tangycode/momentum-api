@@ -1,51 +1,41 @@
-# momentum-api
-Overview
+Purpose
 
-The Momentum API calculates match momentum using recent ball-by-ball data. It provides a real-time, explainable momentum score and trend (HIGH / MEDIUM / LOW) for use in Khel AI MVP dashboards and analytical widgets. The API is fully integration-ready, stateless, and works directly with live payload data instead of any hardcoded logic.
+Analyze recent overs to determine innings momentum using explainable rules.
 
-Features
-Calculates real-time momentum score
-Returns match trend (HIGH / MEDIUM / LOW)
-Uses runs and wickets as core signals
-Fully payload-driven (no static data)
-Stateless and scalable design
-Clean separation of service and route logic
 Endpoint
 
 POST /momentum
 
-Request
+Input Schema
+innings_id
+recent_over_count
+ball_events[]
+Output Schema
+recent_overs
+runs_pattern
+wickets_pattern
+run_delta
+wicket_pressure
+momentum_label
+explanation
+Sample Response
 {
-  "match_id": "match_001",
-  "innings": 1,
-  "balls": [
-    {
-      "ball": 10.1,
-      "runs_off_bat": 4,
-      "extras": 0,
-      "wicket": false
-    }
-  ]
+  "innings_id": "I001",
+  "recent_overs": [1,2,3],
+  "runs_pattern": [6,12,8],
+  "wickets_pattern": [0,0,1],
+  "run_delta": 2,
+  "wicket_pressure": 1,
+  "momentum_label": "steady",
+  "explanation": "Balanced performance without major swings"
 }
-Response
-{
-  "status": "success",
-  "data": {
-    "match_id": "match_001",
-    "innings": 1,
-    "momentum_score": 18,
-    "trend": "MEDIUM",
-    "total_runs": 18,
-    "wickets": 1
-  }
-}
-Run Locally
-pip install -r requirements.txt
-uvicorn main:app --reload
-Deployment
-
-https://momentum-api-student3.onrender.com
-
-Key Improvement
-
-Converted from static/demo logic → fully dynamic, payload-driven, explainable momentum model with stateless architecture suitable for Khel AI MVP integration.
+Validation Errors
+Missing innings_id → 400
+Invalid recent_over_count → 400
+Empty ball_events → 400
+Duplicate/invalid sequence → 400
+Integration Notes
+Can consume Over Summary API output
+Uses strict chronological grouping
+Explainable rule-based classification
+Frontend-ready JSON
