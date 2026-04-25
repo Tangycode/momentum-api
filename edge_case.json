@@ -1,0 +1,8 @@
+{
+  "innings_id": "I003",
+  "recent_over_count": 2,
+  "ball_events": [
+    {"over": 10, "ball_in_over": 1, "over_ball": "10.1", "runs": 0, "extras": 0, "wicket": 1},
+    {"over": 10, "ball_in_over": 2, "over_ball": "10.2", "runs": 0, "extras": 0, "wicket": 1}
+  ]
+}
