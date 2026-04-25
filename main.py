@@ -1,41 +1,48 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List
-
-from momentum_service import calculate_momentum
+from fastapi.middleware.cors import CORSMiddleware
+from schemas import MomentumRequest
+from services import validate_ball_events, build_momentum
 
 app = FastAPI()
 
-# -----------------------------
-# Input Schema
-# -----------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-class BallEvent(BaseModel):
-    ball: float
-    runs_off_bat: int
-    extras: int = 0
-    wicket: bool = False
+@app.get("/")
+def root():
+    return {"message": "Momentum API is running"}
 
-class MomentumInput(BaseModel):
-    match_id: str
-    innings: int
-    balls: List[BallEvent]
-
-# -----------------------------
-# API Route
-# -----------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 @app.post("/momentum")
-def momentum(input_data: MomentumInput):
-    """
-    Returns match momentum based on recent ball events.
-    Fully integration-ready and stateless.
-    """
+def momentum(request: MomentumRequest):
+
+    if not request.innings_id:
+        raise HTTPException(status_code=400, detail="Missing innings_id")
+
+    if request.recent_over_count <= 0:
+        raise HTTPException(status_code=400, detail="recent_over_count must be > 0")
+
+    if not request.ball_events:
+        raise HTTPException(status_code=400, detail="ball_events cannot be empty")
+
     try:
-        result = calculate_momentum(input_data.dict())
+        validate_ball_events(request.ball_events)
+        result = build_momentum(request.ball_events, request.recent_over_count)
+
         return {
-            "status": "success",
-            "data": result
+            "innings_id": request.innings_id,
+            **result
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        raise HTTPException(status_code=500, detail="Internal server error")
