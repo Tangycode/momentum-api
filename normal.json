@@ -1,0 +1,12 @@
+{
+  "innings_id": "I001",
+  "recent_over_count": 3,
+  "ball_events": [
+    {"over": 1, "ball_in_over": 1, "over_ball": "1.1", "runs": 2, "extras": 0, "wicket": 0},
+    {"over": 1, "ball_in_over": 2, "over_ball": "1.2", "runs": 4, "extras": 0, "wicket": 0},
+    {"over": 2, "ball_in_over": 1, "over_ball": "2.1", "runs": 6, "extras": 0, "wicket": 0},
+    {"over": 2, "ball_in_over": 2, "over_ball": "2.2", "runs": 6, "extras": 0, "wicket": 0},
+    {"over": 3, "ball_in_over": 1, "over_ball": "3.1", "runs": 3, "extras": 0, "wicket": 1},
+    {"over": 3, "ball_in_over": 2, "over_ball": "3.2", "runs": 5, "extras": 0, "wicket": 0}
+  ]
+}
